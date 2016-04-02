@@ -1,0 +1,101 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    tools:context=".Comment_Retweet_Like_Share_Activty.CommentFragment"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:id="@+id/comment_profile_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:layout_marginTop="5dp">
+
+        <ImageView
+            android:id="@+id/imageView_comment_profile_image"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/textView_comment_profile_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/imageView_comment_profile_image"
+            android:layout_toRightOf="@+id/imageView_comment_profile_image"
+            android:singleLine="true"
+            android:text="Medium Text"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_comment_create_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView_comment_profile_name"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/imageView_comment_profile_image"
+            android:layout_toRightOf="@+id/imageView_comment_profile_image"
+            android:text="Small Text" />
+
+        <TextView
+            android:id="@+id/textView_comment_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView_comment_create_at"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/imageView_comment_profile_image"
+            android:layout_toRightOf="@+id/imageView_comment_profile_image"
+            android:autoLink="web"
+            android:text="Medium Text"
+            android:textColor="#000"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#bbdefb"
+        android:id="@+id/comment_wrapper"
+        android:layout_below="@+id/comment_profile_wrapper"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText_comment_text"
+            android:background="@null"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="2dp"
+            android:visibility="visible"
+            android:textColor="#000" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tweet"
+        android:id="@+id/button_comment_tweet"
+        android:layout_below="@+id/comment_wrapper"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="#fff"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="10dp" />
+
+</RelativeLayout>
