@@ -21,8 +21,26 @@ public class GlobalVariable {
         return displaymetrics.heightPixels;
     }
 
+    public static float getDensity(Activity activity)
+    {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        return displaymetrics.density;
+    }
+
     public static final String CURRENT_USER_ID = "currentUserId";
-    public static final String TWEET_TRANSFER = "tweetTransfer";
+    public static final String RETWEET_TWEET_TRANSFER = "tweetTransfer";
     public static final String COMMENT_TWEET_TRANSFER = "commentTweetTransfer";
+
+    public static int convertPXtoDP(Activity context,int px)
+    {
+        return Math.round(px * getDensity(context));
+    }
+
+    public static int convertDPtoPX(Activity context,int px)
+    {
+        return Math.round(px / getDensity(context));
+    }
+
 }
 

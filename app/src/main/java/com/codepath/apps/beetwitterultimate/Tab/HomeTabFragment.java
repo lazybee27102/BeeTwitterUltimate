@@ -17,7 +17,7 @@ import com.codepath.apps.beetwitterultimate.Other_useful_class.EndlessRecyclerVi
 import com.codepath.apps.beetwitterultimate.R;
 import com.codepath.apps.beetwitterultimate.Twitter_Client.TwitterApplication;
 import com.codepath.apps.beetwitterultimate.Twitter_Client.TwitterClient;
-import com.codepath.apps.beetwitterultimate.Twitter_RecyclerView.TweetAdapter;
+import com.codepath.apps.beetwitterultimate.RecyclerViewAdapter.TweetAdapter;
 import com.codepath.apps.beetwitterultimate.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -178,8 +178,6 @@ public class HomeTabFragment extends Fragment {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                Log.d("ERROR", errorResponse.toString());
-                Toast.makeText(getContext(), "Can't get new Tweet", Toast.LENGTH_SHORT).show();
             }
         });
     }

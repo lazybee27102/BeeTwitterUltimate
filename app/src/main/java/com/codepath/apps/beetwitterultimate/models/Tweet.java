@@ -19,44 +19,43 @@ import java.util.Locale;
  */
 public class Tweet implements Parcelable {
 
+    public static final Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {
+        @Override
+        public Tweet createFromParcel(Parcel source) {
+            return new Tweet(source);
+        }
+
+        @Override
+        public Tweet[] newArray(int size) {
+            return new Tweet[size];
+        }
+    };
     ArrayList<String> tags = new ArrayList<>();
+    boolean favorited, retweeted;
+    long favorited_count;
+    long retweeted_count;
     private String body;
     private long uid;//inique id for the tweet
     private String createAt;
     private User user;
-    private String photo;
+    private ArrayList<String> photos = new ArrayList<>();
     private String video;
-    boolean favorited,retweeted;
-    long favorited_count;
-    long retweeted_count;
 
-    public ArrayList<String> getTags() {
-        return tags;
+    public Tweet() {
     }
 
-    public void setFavorited(boolean favorited) {
-        this.favorited = favorited;
-    }
-
-    public void setRetweeted(boolean retweeted) {
-        this.retweeted = retweeted;
-    }
-
-    public long getFavorited_count() {
-        return favorited_count;
-    }
-
-    public long getRetweeted_count() {
-        return retweeted_count;
-    }
-
-
-    public boolean isFavorited() {
-        return favorited;
-    }
-
-    public boolean isRetweeted() {
-        return retweeted;
+    protected Tweet(Parcel in) {
+        this.tags = in.createStringArrayList();
+        this.body = in.readString();
+        this.uid = in.readLong();
+        this.createAt = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
+        this.photos = in.createStringArrayList();
+        this.video = in.readString();
+        this.favorited = in.readByte() != 0;
+        this.retweeted = in.readByte() != 0;
+        this.favorited_count = in.readLong();
+        this.retweeted_count = in.readLong();
     }
 
     public static Tweet fromJSON(JSONObject object) {
@@ -67,39 +66,48 @@ public class Tweet implements Parcelable {
             tweet.createAt = object.getString("created_at");
             tweet.user = User.fromJSON(object.getJSONObject("user"));
 
-            JSONArray media = object.getJSONObject("extended_entities").getJSONArray("media");
 
-            JSONObject objectMedia = media.getJSONObject(0);
-            if (objectMedia.getString("type").equals("photo"))
+            boolean isMediaNull = object.isNull("extended_entities");
+            if (!isMediaNull)
             {
-                tweet.photo = objectMedia.getString("media_url_https");
+                JSONArray media = object.getJSONObject("extended_entities").getJSONArray("media");
+                for (int i = 0; i < media.length(); i++) {
+                    JSONObject objectMedia = media.getJSONObject(i);
+                    if (objectMedia.getString("type").equals("photo")) {
+                        if (tweet.photos.size() < 4)
+                            tweet.photos.add(objectMedia.getString("media_url_https"));
 
-            }else {
-                JSONArray video = objectMedia.getJSONObject("video_info").getJSONArray("variants");
+                    } else {
+                        JSONArray video = objectMedia.getJSONObject("video_info").getJSONArray("variants");
 
-                for(int y = 0;y<video.length();y++)
-                {
-                    JSONObject objectVideo = video.getJSONObject(y);
-                    if(objectVideo.getString("content_type").equals("video/mp4"))
-                    {
-                        tweet.video = objectVideo.getString("url");
+                        for (int y = 0; y < video.length(); y++) {
+                            JSONObject objectVideo = video.getJSONObject(y);
+                            if (objectVideo.getString("content_type").equals("video/mp4")) {
+                                tweet.video = objectVideo.getString("url");
+                                break;
+                            }
+                        }
+                    }
+                    if (tweet.video != null) {
                         break;
                     }
                 }
             }
+
+
+
+
             tweet.favorited = object.getBoolean("favorited");
             tweet.retweeted = object.getBoolean("retweeted");
             tweet.retweeted_count = object.getLong("retweet_count");
             tweet.favorited_count = object.getLong("favorite_count");
 
             JSONObject entities = object.getJSONObject("entities");
-            if(!entities.isNull("user_mentions"))
-            {
+            if (!entities.isNull("user_mentions")) {
                 JSONArray arrayEntities = entities.getJSONArray("user_mentions");
-                for (int z = 0;z<arrayEntities.length();z++)
-                {
+                for (int z = 0; z < arrayEntities.length(); z++) {
                     JSONObject object_screenName = arrayEntities.getJSONObject(z);
-                    tweet.tags.add("@"+object_screenName.getString("screen_name")+" ");
+                    tweet.tags.add("@" + object_screenName.getString("screen_name") + " ");
                 }
             }
 
@@ -129,12 +137,40 @@ public class Tweet implements Parcelable {
         return arr;
     }
 
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public long getFavorited_count() {
+        return favorited_count;
+    }
+
+    public long getRetweeted_count() {
+        return retweeted_count;
+    }
+
+    public boolean isFavorited() {
+        return favorited;
+    }
+
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
+    }
+
+    public boolean isRetweeted() {
+        return retweeted;
+    }
+
+    public void setRetweeted(boolean retweeted) {
+        this.retweeted = retweeted;
+    }
+
     public String getVideo() {
         return video;
     }
 
-    public String getPhoto() {
-        return photo;
+    public ArrayList<String> getPhoto() {
+        return photos;
     }
 
     public String getBody() {
@@ -173,43 +209,16 @@ public class Tweet implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringList(this.tags);
         dest.writeString(this.body);
         dest.writeLong(this.uid);
         dest.writeString(this.createAt);
         dest.writeParcelable(this.user, flags);
-        dest.writeString(this.photo);
+        dest.writeStringList(this.photos);
         dest.writeString(this.video);
         dest.writeByte(favorited ? (byte) 1 : (byte) 0);
         dest.writeByte(retweeted ? (byte) 1 : (byte) 0);
         dest.writeLong(this.favorited_count);
         dest.writeLong(this.retweeted_count);
     }
-
-    public Tweet() {
-    }
-
-    protected Tweet(Parcel in) {
-        this.body = in.readString();
-        this.uid = in.readLong();
-        this.createAt = in.readString();
-        this.user = in.readParcelable(User.class.getClassLoader());
-        this.photo = in.readString();
-        this.video = in.readString();
-        this.favorited = in.readByte() != 0;
-        this.retweeted = in.readByte() != 0;
-        this.favorited_count = in.readLong();
-        this.retweeted_count = in.readLong();
-    }
-
-    public static final Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {
-        @Override
-        public Tweet createFromParcel(Parcel source) {
-            return new Tweet(source);
-        }
-
-        @Override
-        public Tweet[] newArray(int size) {
-            return new Tweet[size];
-        }
-    };
 }

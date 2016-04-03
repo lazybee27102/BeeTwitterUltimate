@@ -1,6 +1,10 @@
 package com.codepath.apps.beetwitterultimate.Twitter_Client;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.util.Log;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -8,6 +12,15 @@ import com.loopj.android.http.RequestParams;
 
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /*
  * 
@@ -24,6 +37,8 @@ import org.scribe.builder.api.TwitterApi;
 public class TwitterClient extends OAuthBaseClient {
     public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class; // Change this
     public static final String REST_URL = "https://api.twitter.com/1.1"; // Change this, base API URL
+
+    public static final String UPLOAD_ENDPOINT = "https://upload.twitter.com/1.1";
     public static final String REST_CONSUMER_KEY = "0gsq8iiuzg773rgrjLYdHC0lw";       // Change this
     public static final String REST_CONSUMER_SECRET = "aCA6L0mnzdNQu4udtjQgGfpbt5BRaQj2jET4aOfI7QePIOUYRE"; // Change this
     public static final String REST_CALLBACK_URL = "oauth://cpbeetwitter"; // Change this (here and in manifest)
@@ -69,10 +84,13 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().get(apiURL, params, handler);
     }
 
-    public void postNewTweet(String status, AsyncHttpResponseHandler handler) {
+    public void postNewTweet(String status,List<String> medias, AsyncHttpResponseHandler handler) {
         String apiURL = getApiUrl("statuses/update.json");
         RequestParams params = new RequestParams();
         params.put("status", status);
+
+        params.put("media_ids",medias);
+
         getClient().post(apiURL, params, handler);
     }
 
@@ -110,12 +128,26 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().post(apiURL, params, handler);
     }
 
+    public void postMediaUpload(String filePath, AsyncHttpResponseHandler handler) {
+        RequestParams params = new RequestParams();
+        File file = new File(filePath);
+
+        Bitmap bitmapObject = BitmapFactory.decodeFile(file.getAbsolutePath());
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmapObject.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+
+        String s =  Base64.encodeToString(bos.toByteArray(), Base64.DEFAULT);
+        params.put("media_data", s);
+
+        getClient().post("https://upload.twitter.com/1.1/media/upload.json", params, handler);
+    }
+
 
 
 
 
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
-	 * 	  i.e getApiUrl("statuses/home_timeline.json");
+     * 	  i.e getApiUrl("statuses/home_timeline.json");
 	 * 2. Define the parameters to pass to the request (query or body)
 	 *    i.e RequestParams params = new RequestParams("foo", "bar");
 	 * 3. Define the request method and make a call to the client

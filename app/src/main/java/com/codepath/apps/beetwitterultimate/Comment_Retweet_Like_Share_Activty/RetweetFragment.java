@@ -38,7 +38,7 @@ public class RetweetFragment extends DialogFragment {
 
         Bundle args = new Bundle();
 
-        args.putParcelable(GlobalVariable.TWEET_TRANSFER, tweet);
+        args.putParcelable(GlobalVariable.RETWEET_TWEET_TRANSFER, tweet);
 
         frag.setArguments(args);
 
@@ -67,7 +67,7 @@ public class RetweetFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Tweet tweet = getArguments().getParcelable(GlobalVariable.TWEET_TRANSFER);
+        Tweet tweet = getArguments().getParcelable(GlobalVariable.RETWEET_TWEET_TRANSFER);
         profile = (ImageView) view.findViewById(R.id.imageView_comment_profile_image);
         mainPhoto = (ImageView) view.findViewById(R.id.imageView_retweet_mainPhoto);
         name = (TextView) view.findViewById(R.id.textView_comment_profile_name);

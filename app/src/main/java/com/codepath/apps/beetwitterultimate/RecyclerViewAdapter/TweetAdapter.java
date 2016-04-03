@@ -1,4 +1,4 @@
-package com.codepath.apps.beetwitterultimate.Twitter_RecyclerView;
+package com.codepath.apps.beetwitterultimate.RecyclerViewAdapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -73,10 +73,10 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
                 }
             });
         } else {
-            if (tweet.getPhoto() != null) {
+            if (tweet.getPhoto().size()>0) {
                 holder.videoView.setVisibility(View.GONE);
                 holder.main_image.setVisibility(View.VISIBLE);
-                Glide.with(context).load(tweet.getPhoto()).placeholder(R.drawable.placeholder).into(holder.main_image);
+                Glide.with(context).load(tweet.getPhoto().get(0)).placeholder(R.drawable.placeholder).into(holder.main_image);
             }else {
                 holder.videoView.setVisibility(View.GONE);
                 holder.main_image.setVisibility(View.GONE);
@@ -106,7 +106,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
             Drawable drawable = context.getResources().getDrawable(R.drawable.ic_favorite_black_24dp);
             holder.favorited.setImageDrawable(drawable);
         }
-
         if (tweet.isRetweeted() == true) {
             Drawable drawable = context.getResources().getDrawable(R.drawable.ic_repeat_white_24dp);
             holder.retweet.setImageDrawable(drawable);
@@ -131,7 +130,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
                                 Drawable drawable = context.getResources().getDrawable(R.drawable.ic_chat_bubble_white_24dp);
                                 holder.comment.setImageDrawable(drawable);
                             }
-
                             @Override
                             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                                 super.onFailure(statusCode, headers, throwable, errorResponse);
@@ -140,14 +138,11 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
                     }
                 });
                 fragment.show(fragmentManager,"COMMENT");
-
             }
         });
-
         holder.retweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 android.support.v4.app.FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
                 RetweetFragment retweetFragment = RetweetFragment.newInstance(tweet, new RetweetFragment.getResponseFromRetweet() {
                     @Override
@@ -166,16 +161,12 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
                                     long tweeter_count = Long.valueOf(holder.retweet_count.getText().toString().trim());
                                     holder.retweet_count.setText(String.valueOf(tweeter_count + 1));
                                 }
-
                                 @Override
                                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                                     super.onFailure(statusCode, headers, throwable, errorResponse);
                                     Toast.makeText(context, "Retweet Failed", Toast.LENGTH_SHORT).show();
-
                                 }
                             });
-
-
                         } else {
                             //isretweet ===> false
                             client.postUnRetweet(String.valueOf(tweet.getUid()), new JsonHttpResponseHandler() {
@@ -186,29 +177,21 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
                                     tweet.setRetweeted(false);
                                     Drawable drawable = context.getResources().getDrawable(R.drawable.ic_repeat_black_24dp);
                                     holder.retweet.setImageDrawable(drawable);
-
                                     long tweeter_count = Long.valueOf(holder.retweet_count.getText().toString().trim());
                                     holder.retweet_count.setText(String.valueOf(tweeter_count - 1));
                                 }
-
                                 @Override
                                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                                     super.onFailure(statusCode, headers, throwable, errorResponse);
                                     Toast.makeText(context, "UnRetweet Failed", Toast.LENGTH_SHORT).show();
-
                                 }
                             });
-
-
                         }
                     }
                 });
                 retweetFragment.show(fragmentManager, "RETWEET");
-
-
             }
         });
-
         holder.favorited.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,25 +206,18 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
                             holder.favorite_count.setText(String.valueOf(favorite_count - 1));
                             Drawable drawable = context.getResources().getDrawable(R.drawable.ic_favorite_black_24dp);
                             holder.favorited.setImageDrawable(drawable);
-
                         }
-
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                             super.onFailure(statusCode, headers, throwable, errorResponse);
                         }
                     });
-
-
-
                 } else {
                     client.postFavorite(String.valueOf(tweet.getUid()), new JsonHttpResponseHandler() {
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                             super.onFailure(statusCode, headers, throwable, errorResponse);
-
                         }
-
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             super.onSuccess(statusCode, headers, response);
@@ -252,22 +228,16 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
                             holder.favorited.setImageDrawable(drawable);
                         }
                     });
-
                 }
             }
         });
-
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
                 shareIntent.setType("text/plain");
-
                 shareIntent.putExtra(Intent.EXTRA_TEXT, tweet.getBody());
-
                 context.startActivity(Intent.createChooser(shareIntent, "Share via "));
-
                 Drawable drawable = context.getResources().getDrawable(R.drawable.ic_share_white_24dp);
                 holder.share.setImageDrawable(drawable);
             }

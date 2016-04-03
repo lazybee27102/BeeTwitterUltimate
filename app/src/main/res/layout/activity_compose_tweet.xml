@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity.ComposeTweetActivity"
-    android:orientation="vertical">
+    >
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        android:id="@+id/toolbar_compose">
+        android:id="@+id/toolbar_compose"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_margin="5dp">
+        android:visibility="visible"
+        android:layout_below="@+id/toolbar_compose"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
         <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
@@ -24,17 +30,70 @@
             android:scaleType="fitXY"
             android:padding="5dp" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText_compose_status"
-            android:layout_weight="1"
-            android:hint="What do you think?"
-            android:background="@null"
-            android:layout_marginTop="2dp"
-            android:layout_marginLeft="3dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="1">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText_compose_status"
+                android:hint="What do you think?"
+                android:background="@null"
+                android:padding="5dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/recyclerView_compose_images"
+                android:padding="5dp"
+                android:visibility="visible" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:weightSum="3"
+        android:background="@color/colorPrimary"
+        android:gravity="bottom"
+        android:visibility="visible"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
-</LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView_compose_insertImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_insert_photo_white_24dp"
+            android:layout_weight="1"
+            android:padding="5dp" />
+
+        <ImageView
+            android:id="@+id/imageView_compose_takePicture"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera_alt_white_24dp"
+            android:layout_weight="1"
+            android:padding="5dp" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView_compose_addLink"
+            android:layout_weight="1"
+            android:src="@drawable/ic_attachment_white_24dp"
+            android:padding="5dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>
