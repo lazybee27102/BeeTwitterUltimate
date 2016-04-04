@@ -2,12 +2,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.codepath.apps.beetwitterultimate.Tab.MentionTabFragment">
+    tools:context="com.codepath.apps.beetwitterultimate.Tab.HomeTabFragment"
+    android:visibility="visible">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
+        android:id="@+id/swipeLayout_mention_wrapper_tweets"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:visibility="gone">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerView_mention_tweets"
+            android:layout_gravity="left|top"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLargeInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar_mention_progress"
+        android:layout_gravity="center"
+        android:indeterminate="true"/>
 </FrameLayout>

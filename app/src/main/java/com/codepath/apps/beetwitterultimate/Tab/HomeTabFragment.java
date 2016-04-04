@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 import com.codepath.apps.beetwitterultimate.Other_useful_class.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.beetwitterultimate.R;
+import com.codepath.apps.beetwitterultimate.RecyclerViewAdapter.TweetAdapter;
 import com.codepath.apps.beetwitterultimate.Twitter_Client.TwitterApplication;
 import com.codepath.apps.beetwitterultimate.Twitter_Client.TwitterClient;
-import com.codepath.apps.beetwitterultimate.RecyclerViewAdapter.TweetAdapter;
 import com.codepath.apps.beetwitterultimate.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -71,7 +71,7 @@ public class HomeTabFragment extends Fragment {
 
     private void registerWidgets(View v) {
         //GetView
-        swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeLayout_home_wrapper_tweets);
+        swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeLayout_tweet_wrapper_tweets);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView_home_tweets);
         recyclerView.setHasFixedSize(true);
@@ -79,7 +79,7 @@ public class HomeTabFragment extends Fragment {
         tweets = new ArrayList<>();
         adapter = new TweetAdapter(getContext(), tweets);
         recyclerView.setAdapter(adapter);
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar_home_progress);
+        progressBar = (ProgressBar) v.findViewById(R.id.progressBar_tweet_progress);
 
         client = TwitterApplication.getInstance(getContext());
         populateTimeline();
@@ -184,4 +184,10 @@ public class HomeTabFragment extends Fragment {
 
 
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && tweets!=null)
+            getAllNewestNews();
+    }
 }

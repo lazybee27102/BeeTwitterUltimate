@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-import android.util.Log;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -15,12 +14,7 @@ import org.scribe.builder.api.TwitterApi;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /*
  * 
@@ -67,6 +61,17 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().get(apiURL, params, handler);
     }
 
+    public void getMentions(long sinceId, long maxId, long count, AsyncHttpResponseHandler handler) {
+        String apiURL = getApiUrl("statuses/mentions_timeline.json");
+        RequestParams params = new RequestParams();
+        params.put("count", count);
+        if (sinceId > 0)
+            params.put("since_id", sinceId);
+        if (maxId > 0)
+            params.put("max_id", maxId);
+        getClient().get(apiURL, params, handler);
+    }
+
 
     public void getCurrentUser(AsyncHttpResponseHandler handler) {
         String apiURL = getApiUrl("account/verify_credentials.json");
@@ -75,21 +80,34 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().get(apiURL, params, handler);
     }
 
-    public void getCurrentUserTimeLine(String id, AsyncHttpResponseHandler handler) {
+    public void getCurrentUserTimeLine(String id, long sinceId, long maxId, int count, AsyncHttpResponseHandler handler) {
         String apiURL = getApiUrl("statuses/user_timeline.json");
         RequestParams params = new RequestParams();
         params.put("user_id", id);
-        params.put("count", 1);
-        params.put("since_id", 1);
+        params.put("count", count);
+        if (sinceId > 0)
+            params.put("since_id", sinceId);
+        if (maxId > 0)
+            params.put("max_id", maxId);
         getClient().get(apiURL, params, handler);
     }
 
-    public void postNewTweet(String status,List<String> medias, AsyncHttpResponseHandler handler) {
+    public void postNewTweet(String status, List<String> medias, AsyncHttpResponseHandler handler) {
         String apiURL = getApiUrl("statuses/update.json");
         RequestParams params = new RequestParams();
         params.put("status", status);
 
-        params.put("media_ids",medias);
+        if (medias!=null && medias.size() > 0)
+        {
+            StringBuilder result = new StringBuilder();
+            for (String s : medias)
+            {
+                result.append(s+",");
+            }
+            result.substring(0,result.length()-2);
+            params.put("media_ids", result.toString());
+        }
+
 
         getClient().post(apiURL, params, handler);
     }
@@ -136,10 +154,24 @@ public class TwitterClient extends OAuthBaseClient {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmapObject.compress(Bitmap.CompressFormat.JPEG, 100, bos);
 
-        String s =  Base64.encodeToString(bos.toByteArray(), Base64.DEFAULT);
+        String s = Base64.encodeToString(bos.toByteArray(), Base64.DEFAULT);
         params.put("media_data", s);
 
         getClient().post("https://upload.twitter.com/1.1/media/upload.json", params, handler);
+    }
+
+    public void getUserFavoritesList(String id, long sinceId, long maxId, int count, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("favorites/list.json");
+        RequestParams params = new RequestParams();
+        if (sinceId > 0) {
+            params.put("since_id", String.valueOf(sinceId));
+        }
+        if (maxId > 0) {
+            params.put("max_id", String.valueOf(maxId));
+        }
+        params.put("count", count);
+        params.put("user_id", id);
+        client.get(apiUrl, params, handler);
     }
 
 

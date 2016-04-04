@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.codepath.apps.beetwitterultimate.MainActivity.Profile.ProfileActivity;
 import com.codepath.apps.beetwitterultimate.Other_useful_class.GlobalVariable;
 import com.codepath.apps.beetwitterultimate.R;
 import com.codepath.apps.beetwitterultimate.Tab.HomeTabFragment;
@@ -65,7 +66,7 @@ public class HomeTimelineActivity extends AppCompatActivity {
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         HomeTabFragment fragment_home = HomeTabFragment.getInstance();
-        MentionTabFragment fragment_tab = MentionTabFragment.getInstance(id);
+        MentionTabFragment fragment_tab = MentionTabFragment.getInstance();
 
         viewPagerAdapter.addFragment(fragment_home, "HOME");
         viewPagerAdapter.addFragment(fragment_tab, "MENTION");
@@ -87,11 +88,12 @@ public class HomeTimelineActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_action_profile: {
-/*                Intent i = getIntent();
-                String id = i.getStringExtra(GlobalVariable.CURRENT_USER_ID);
+
                 Intent profile = new Intent(HomeTimelineActivity.this, ProfileActivity.class);
-                profile.putExtra(GlobalVariable.CURRENT_USER_ID, id);
-                startActivity(profile);*/
+                Bundle b = new Bundle();
+                b.putString(GlobalVariable.CURRENT_FROM_TWEET_TO_PROFILE,id);
+                profile.putExtra("DATA",b);
+                startActivity(profile);
             }
             break;
         }

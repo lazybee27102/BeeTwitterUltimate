@@ -1,4 +1,4 @@
-package com.codepath.apps.beetwitterultimate.Tab;
+package com.codepath.apps.beetwitterultimate.MainActivity.Profile;
 
 
 import android.os.Bundle;
@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.codepath.apps.beetwitterultimate.Other_useful_class.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.beetwitterultimate.R;
 import com.codepath.apps.beetwitterultimate.RecyclerViewAdapter.MentionAdapter;
-import com.codepath.apps.beetwitterultimate.RecyclerViewAdapter.TweetAdapter;
 import com.codepath.apps.beetwitterultimate.Twitter_Client.TwitterApplication;
 import com.codepath.apps.beetwitterultimate.Twitter_Client.TwitterClient;
 import com.codepath.apps.beetwitterultimate.models.Tweet;
@@ -31,15 +30,12 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MentionTabFragment extends Fragment {
+public class ProfileFavoritesFragment extends Fragment {
 
-    public MentionTabFragment() {
-        // Required empty public constructor
-    }
 
-    private static MentionTabFragment mentionTabFragment;
-
+    private static final String PROFILE_TAB_FAVORITED_USER_ID = "profile_tab_favorited_user_id";
     TwitterClient client;
+    private String id = "";
     private ArrayList<Tweet> tweets;
     private MentionAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
@@ -48,22 +44,30 @@ public class MentionTabFragment extends Fragment {
     private ProgressBar progressBar;
     private long sinceId = -1;
     private long maxId = -1;
+    public ProfileFavoritesFragment() {
+        // Required empty public constructor
+    }
 
-
-    public static MentionTabFragment getInstance()
-    {
-        if(mentionTabFragment==null)
-        {
-            mentionTabFragment = new MentionTabFragment();
-        }
+    public static ProfileFavoritesFragment getInstance(String id) {
+        ProfileFavoritesFragment mentionTabFragment = new ProfileFavoritesFragment();
+        Bundle b = new Bundle();
+        b.putString(PROFILE_TAB_FAVORITED_USER_ID, id);
+        mentionTabFragment.setArguments(b);
         return mentionTabFragment;
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        id = getArguments().getString(PROFILE_TAB_FAVORITED_USER_ID);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_mention_tab, container, false);
+        View v = inflater.inflate(R.layout.fragment_profile_favorites, container, false);
 
 
         registerWidgets(v);
@@ -93,22 +97,22 @@ public class MentionTabFragment extends Fragment {
 
     private void registerWidgets(View v) {
         //GetView
-        swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeLayout_mention_wrapper_tweets);
+        swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeLayout_profile_favorited_wrapper_tweets);
         linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView_mention_tweets);
+        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView_profile_favorited_tweets);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         tweets = new ArrayList<>();
         adapter = new MentionAdapter(getContext(), tweets);
         recyclerView.setAdapter(adapter);
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar_mention_progress);
+        progressBar = (ProgressBar) v.findViewById(R.id.progressBar_profile_favorited_progress);
 
         client = TwitterApplication.getInstance(getContext());
         populateTimeline();
     }
 
     public void populateTimeline() {
-        client.getMentions(1, -1, 20, new JsonHttpResponseHandler() {
+        client.getUserFavoritesList(id, 1, -1, 20, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
@@ -129,14 +133,14 @@ public class MentionTabFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 Log.d("ERROR", errorResponse.toString());
-                Toast.makeText(getContext(), "Can't get Mention", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Can't get favorited Tweet", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void getOldestNews() {
 
-        client.getMentions(-1, maxId - 1, 50, new JsonHttpResponseHandler() {
+        client.getUserFavoritesList(id, -1, maxId - 1, 50, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
@@ -152,13 +156,13 @@ public class MentionTabFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 Log.d("ERROR", errorResponse.toString());
-                Toast.makeText(getContext(), "Can't get new Mention", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Can't get new favorited Tweet", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void getAllNewestNews() {
-        client.getMentions(sinceId, -1, 200, new JsonHttpResponseHandler() {
+        client.getUserFavoritesList(id, sinceId, -1, 200, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
@@ -172,7 +176,7 @@ public class MentionTabFragment extends Fragment {
                     sinceId = tweets.get(0).getUid();
                     maxId = tweets.get(tweets.size() - 1).getUid();
                 } else
-                    Toast.makeText(getContext(), "No new Mention", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "No new favorited Tweet", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -183,10 +187,4 @@ public class MentionTabFragment extends Fragment {
         });
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && tweets!=null)
-            getAllNewestNews();
-    }
 }

@@ -73,9 +73,9 @@ public class CommentFragment extends DialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final Tweet tweet = getArguments().getParcelable(GlobalVariable.COMMENT_TWEET_TRANSFER);
-        profile = (ImageView) view.findViewById(R.id.imageView_comment_profile_image);
-        name = (TextView) view.findViewById(R.id.textView_comment_profile_name);
-        others = (TextView) view.findViewById(R.id.textView_comment_create_at);
+        profile = (ImageView) view.findViewById(R.id.imageView_mention_profile_image);
+        name = (TextView) view.findViewById(R.id.textView_mention_profile_name);
+        others = (TextView) view.findViewById(R.id.textView_mention_create_at);
         status = (TextView) view.findViewById(R.id.textView_comment_status);
         button_tweet = (Button) view.findViewById(R.id.button_comment_tweet);
 

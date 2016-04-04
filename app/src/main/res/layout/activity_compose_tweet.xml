@@ -61,7 +61,7 @@
         android:orientation="horizontal"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:weightSum="3"
+        android:weightSum="2"
         android:background="@color/colorPrimary"
         android:gravity="bottom"
         android:visibility="visible"
@@ -84,14 +84,6 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_camera_alt_white_24dp"
             android:layout_weight="1"
-            android:padding="5dp" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView_compose_addLink"
-            android:layout_weight="1"
-            android:src="@drawable/ic_attachment_white_24dp"
             android:padding="5dp" />
 
     </LinearLayout>

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.codepath.apps.beetwitterultimate.Other_useful_class.ProcessImageFile;
 import com.codepath.apps.beetwitterultimate.R;
 
 import java.io.File;
@@ -35,13 +36,20 @@ public class UploadImageAdapter extends RecyclerView.Adapter<UploadImageAdapter.
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final String imagePath = images.get(position);
         File file = new File(imagePath);
         if (file.exists())
         {
-            Bitmap bitmapObject = BitmapFactory.decodeFile(file.getAbsolutePath());
-            holder.imageUploaded.setImageBitmap(bitmapObject);
+            ProcessImageFile task = (ProcessImageFile) new ProcessImageFile(context, new ProcessImageFile.accessResponse() {
+                @Override
+                public void ProcessBimap(Bitmap bitmap) {
+                    holder.imageUploaded.setImageBitmap(bitmap);
+                }
+            });
+            task.execute(file.getAbsolutePath());
+            
+
         }else
             Toast.makeText(context, "Can't import this file", Toast.LENGTH_SHORT).show();
 

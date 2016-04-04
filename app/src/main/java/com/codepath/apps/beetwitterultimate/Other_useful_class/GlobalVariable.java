@@ -28,7 +28,10 @@ public class GlobalVariable {
         return displaymetrics.density;
     }
 
+    public static final String CURRENT_FROM_HOME_TO_PROFILE = "currentUserIdFromHomeToProfile";
+    public static final String CURRENT_FROM_TWEET_TO_PROFILE = "currentUserIdFromTweetToProfile";
     public static final String CURRENT_USER_ID = "currentUserId";
+    public static final String CURRENT_USER_ID_FROM_TWEET = "currentUserIdfromTweet";
     public static final String RETWEET_TWEET_TRANSFER = "tweetTransfer";
     public static final String COMMENT_TWEET_TRANSFER = "commentTweetTransfer";
 

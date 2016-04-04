@@ -16,6 +16,12 @@ public class User implements Parcelable {
     private String profileImageURL;
     private String backgroundURL;
 
+    public String getDescription() {
+        return description;
+    }
+
+    private String description;
+
     public String getBackgroundURL() {
         return backgroundURL;
     }
@@ -62,6 +68,8 @@ public class User implements Parcelable {
             user.followingCount = object.getLong("friends_count");
             user.followerCount = object.getLong("followers_count");
             user.backgroundURL = object.getString("profile_banner_url");
+            user.description = object.getString("description");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

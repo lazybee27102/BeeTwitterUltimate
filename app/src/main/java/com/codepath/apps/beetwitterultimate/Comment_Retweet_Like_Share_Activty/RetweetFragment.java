@@ -68,10 +68,10 @@ public class RetweetFragment extends DialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Tweet tweet = getArguments().getParcelable(GlobalVariable.RETWEET_TWEET_TRANSFER);
-        profile = (ImageView) view.findViewById(R.id.imageView_comment_profile_image);
+        profile = (ImageView) view.findViewById(R.id.imageView_mention_profile_image);
         mainPhoto = (ImageView) view.findViewById(R.id.imageView_retweet_mainPhoto);
-        name = (TextView) view.findViewById(R.id.textView_comment_profile_name);
-        others = (TextView) view.findViewById(R.id.textView_comment_create_at);
+        name = (TextView) view.findViewById(R.id.textView_mention_profile_name);
+        others = (TextView) view.findViewById(R.id.textView_mention_create_at);
         status = (TextView) view.findViewById(R.id.textView_retweet_status);
         retweet = (Button) view.findViewById(R.id.button_reweet);
 
@@ -80,9 +80,9 @@ public class RetweetFragment extends DialogFragment {
         others.setText("@"+tweet.getUser().getScreenName() + " - "+tweet.getCreateAt());
         status.setText(tweet.getBody());
 
-        if (tweet.getPhoto() != null) {
+        if (tweet.getPhoto().size()>0) {
             mainPhoto.setVisibility(View.VISIBLE);
-            Glide.with(getContext()).load(tweet.getPhoto()).placeholder(R.drawable.placeholder).into(mainPhoto);
+            Glide.with(getContext()).load(tweet.getPhoto().get(0)).placeholder(R.drawable.placeholder).into(mainPhoto);
         }
 
         if (tweet.isRetweeted())

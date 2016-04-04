@@ -41,28 +41,28 @@ import java.util.ArrayList;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
- * Created by beeiscoding on 28/03/2016.
+ * Created by Administrator on 04/04/2016.
  */
-public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHolder> {
+public class MentionAdapter extends RecyclerView.Adapter<MentionAdapter.MentionViewHolder> {
     Context context;
     private ArrayList<Tweet> tweets;
 
-    public TweetAdapter(Context context, ArrayList<Tweet> tweets) {
+    public MentionAdapter(Context context, ArrayList<Tweet> tweets) {
         this.context = context;
         this.tweets = tweets;
     }
 
     @Override
-    public TweetViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
-        TweetViewHolder viewHolder = new TweetViewHolder(view);
+    public MentionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_mention, parent, false);
+        MentionViewHolder viewHolder = new MentionViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(final TweetViewHolder holder, int position) {
+    public void onBindViewHolder(final MentionViewHolder holder, int position) {
 
-        final TweetViewHolder tweetViewHolder = (TweetViewHolder) holder;
+        final MentionViewHolder tweetViewHolder = (MentionViewHolder) holder;
 
         Typeface typeface_medium = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Light.ttf");
         holder.status.setTypeface(typeface_medium);
@@ -75,12 +75,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
             holder.videoView.setVisibility(View.VISIBLE);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, GlobalVariable.getScreenHeight((Activity) context) * 4 / 10);
             params.gravity = Gravity.CENTER_HORIZONTAL;
-
-            holder.linearLayout_1photo.setVisibility(View.GONE);
-            holder.linearLayout_2photo.setVisibility(View.GONE);
-            holder.linearLayout_3photo.setVisibility(View.GONE);
-            holder.linearLayout_4photo.setVisibility(View.GONE);
-
             holder.videoView.setLayoutParams(params);
             holder.videoView.setVideoPath(tweet.getVideo());
             MediaController mediaController = new MediaController(context);
@@ -95,85 +89,19 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
             });
         } else {
             if (tweet.getPhoto().size()>0) {
-                switch (tweet.getPhoto().size())
-                {
-                    default:
-                    {
-                        holder.linearLayout_1photo.setVisibility(View.VISIBLE);
-                        holder.linearLayout_2photo.setVisibility(View.GONE);
-                        holder.linearLayout_3photo.setVisibility(View.GONE);
-                        holder.linearLayout_4photo.setVisibility(View.GONE);
-                        final String s = tweet.getPhoto().get(0);
-                        Glide.with(context).load(s).placeholder(R.drawable.placeholder).into(holder.main_image);
-                        Log.d("WTF", position + " - " + tweet.getPhoto().get(0));
-                        break;
-                    }
-                    case 2:
-                    {
-                        holder.linearLayout_1photo.setVisibility(View.GONE);
-                        holder.linearLayout_2photo.setVisibility(View.VISIBLE);
-                        holder.linearLayout_3photo.setVisibility(View.GONE);
-                        holder.linearLayout_4photo.setVisibility(View.GONE);
-                        final String s = tweet.getPhoto().get(0);
-                        final String s1 = tweet.getPhoto().get(1);
-                        Glide.with(context).load(s).placeholder(R.drawable.placeholder).into(holder.imageView_2photo_1);
-                        Glide.with(context).load(s1).placeholder(R.drawable.placeholder).into(holder.imageView_2photo_2);
-                        Log.d("WTF", position + " - " + tweet.getPhoto().get(0));
-                        break;
-
-                    }
-                    case 3:
-                    {
-                        holder.linearLayout_1photo.setVisibility(View.GONE);
-                        holder.linearLayout_2photo.setVisibility(View.GONE);
-                        holder.linearLayout_3photo.setVisibility(View.VISIBLE);
-                        holder.linearLayout_4photo.setVisibility(View.GONE);
-                        final String s = tweet.getPhoto().get(0);
-                        final String s1 = tweet.getPhoto().get(1);
-                        final String s2 = tweet.getPhoto().get(2);
-                        Glide.with(context).load(s).placeholder(R.drawable.placeholder).into(holder.imageView_3photo_1);
-                        Glide.with(context).load(s1).placeholder(R.drawable.placeholder).into(holder.imageView_3photo_2);
-                        Glide.with(context).load(s2).placeholder(R.drawable.placeholder).into(holder.imageView_3photo_3);
-                        Log.d("WTF", position + " - " + tweet.getPhoto().get(0));
-                        break;
-
-                    }
-                    case 4:
-                    {
-                        final String s = tweet.getPhoto().get(0);
-                        final String s1 = tweet.getPhoto().get(1);
-                        final String s2 = tweet.getPhoto().get(2);
-                        final String s3 = tweet.getPhoto().get(3);
-
-                        holder.linearLayout_1photo.setVisibility(View.GONE);
-                        holder.linearLayout_2photo.setVisibility(View.GONE);
-                        holder.linearLayout_3photo.setVisibility(View.GONE);
-                        holder.linearLayout_4photo.setVisibility(View.VISIBLE);
-                        Glide.with(context).load(s).placeholder(R.drawable.placeholder).into(holder.imageView_4photo_1);
-                        Glide.with(context).load(s1).placeholder(R.drawable.placeholder).into(holder.imageView_4photo_2);
-                        Glide.with(context).load(s2).placeholder(R.drawable.placeholder).into(holder.imageView_4photo_3);
-                        Glide.with(context).load(s3).placeholder(R.drawable.placeholder).into(holder.imageView_4photo_4);
-                        Log.d("WTF", position + " - " + tweet.getPhoto().get(0));
-                        break;
-
-                    }
-                }
+                holder.main_image.setVisibility(View.VISIBLE);
+                Glide.with(context).load(tweet.getPhoto().get(0)).into(holder.main_image);
                 holder.videoView.setVisibility(View.GONE);
 
             }else {
                 holder.videoView.setVisibility(View.GONE);
-                holder.linearLayout_1photo.setVisibility(View.GONE);
-                holder.linearLayout_2photo.setVisibility(View.GONE);
-                holder.linearLayout_3photo.setVisibility(View.GONE);
-                holder.linearLayout_4photo.setVisibility(View.GONE);
             }
         }
 
 
         holder.name.setText(tweet.getUser().getName());
-        holder.screen_name.setText("@"+tweet.getUser().getScreenName());
         holder.createAt.setText(tweet.getCreateAt());
-        holder.status.setText(tweet.getBody());
+        holder.status.setText(tweet.getUser().getScreenName()+" - " +tweet.getBody());
 
 
 
@@ -188,7 +116,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
         final Animation zoomin = AnimationUtils.loadAnimation(context, R.anim.zoomin);
         final Animation zoomout = AnimationUtils.loadAnimation(context, R.anim.zoomout);
 
-       if (tweet.isFavorited() == true) {
+        if (tweet.isFavorited() == true) {
 
             holder.favorited.setAnimation(zoomin);
             holder.favorited.startAnimation(zoomin);
@@ -357,56 +285,28 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
         return tweets.size();
     }
 
-    public static class TweetViewHolder extends RecyclerView.ViewHolder {
+    public static class MentionViewHolder extends RecyclerView.ViewHolder {
         private ImageView main_image;
         private VideoView videoView;
-        private TextView name, createAt, status,screen_name;
+        private TextView name, createAt, status;
         private ImageView comment, share, retweet, favorited;
         private TextView retweet_count, favorite_count;
         private ImageView profile_image;
 
-        private LinearLayout linearLayout_1photo;
-        private LinearLayout linearLayout_2photo;
-        private LinearLayout linearLayout_3photo;
-        private LinearLayout linearLayout_4photo;
-
-        private ImageView imageView_2photo_1,imageView_2photo_2;
-        private ImageView imageView_3photo_1,imageView_3photo_2,imageView_3photo_3;
-        private ImageView imageView_4photo_1,imageView_4photo_2,imageView_4photo_3,imageView_4photo_4;
-
-        public TweetViewHolder(View itemView) {
+        public MentionViewHolder(View itemView) {
             super(itemView);
-            profile_image = (ImageView) itemView.findViewById(R.id.imageView_tweet_profile_picture);
-            videoView = (VideoView) itemView.findViewById(R.id.videoView);
-            name = (TextView) itemView.findViewById(R.id.textView_tweet_name);
-            createAt = (TextView) itemView.findViewById(R.id.textView_tweet_create_at);
-            status = (TextView) itemView.findViewById(R.id.textView_tweet_status);
-            retweet_count = (TextView) itemView.findViewById(R.id.textView_tweet_retweet_count);
-            favorite_count = (TextView) itemView.findViewById(R.id.textView_tweet_favorited_count);
-            main_image = (ImageView) itemView.findViewById(R.id.imageView_tweet_main_photo);
-            comment = (ImageView) itemView.findViewById(R.id.imageView_tweet_comment);
-            share = (ImageView) itemView.findViewById(R.id.imageView_tweet_share);
-            retweet = (ImageView) itemView.findViewById(R.id.imageView_tweet_retweet);
-            favorited = (ImageView) itemView.findViewById(R.id.imageView_tweet_favorited);
-            screen_name = (TextView)itemView.findViewById(R.id.textView_tweet_sceen_name);
-
-            linearLayout_1photo = (LinearLayout)itemView.findViewById(R.id.layout_tweet_1photo);
-            linearLayout_2photo = (LinearLayout)itemView.findViewById(R.id.layout_tweet_2photo);
-            linearLayout_3photo = (LinearLayout)itemView.findViewById(R.id.layout_tweet_3photo);
-            linearLayout_4photo = (LinearLayout)itemView.findViewById(R.id.layout_tweet_4photo);
-
-            imageView_2photo_1 = (ImageView)itemView.findViewById(R.id.imageView_tweet_2photo_1);
-            imageView_2photo_2 = (ImageView)itemView.findViewById(R.id.imageView_tweet_2photo_2);
-
-            imageView_3photo_1 = (ImageView)itemView.findViewById(R.id.imageView_tweet_3photo_1);
-            imageView_3photo_2 = (ImageView)itemView.findViewById(R.id.imageView_tweet_3photo_2);
-            imageView_3photo_3 = (ImageView)itemView.findViewById(R.id.imageView_tweet_3photo_3);
-
-            imageView_4photo_1 = (ImageView)itemView.findViewById(R.id.imageView_tweet_4photo_1);
-            imageView_4photo_2 = (ImageView)itemView.findViewById(R.id.imageView_tweet_4photo_2);
-            imageView_4photo_3 = (ImageView)itemView.findViewById(R.id.imageView_tweet_4photo_3);
-            imageView_4photo_4 = (ImageView)itemView.findViewById(R.id.imageView_tweet_4photo_4);
-
+            profile_image = (ImageView) itemView.findViewById(R.id.imageView_mention_profile_image);
+            videoView = (VideoView) itemView.findViewById(R.id.videoView_mention_video);
+            name = (TextView) itemView.findViewById(R.id.textView_mention_profile_name);
+            createAt = (TextView) itemView.findViewById(R.id.textView_mention_create_at);
+            status = (TextView) itemView.findViewById(R.id.textView_mention_status);
+            retweet_count = (TextView) itemView.findViewById(R.id.textView_mention_retweet_count);
+            favorite_count = (TextView) itemView.findViewById(R.id.textView_mention_favorited_count);
+            main_image = (ImageView) itemView.findViewById(R.id.imageView_mention_imageURL);
+            comment = (ImageView) itemView.findViewById(R.id.imageView_mention_comment);
+            share = (ImageView) itemView.findViewById(R.id.imageView_mention_share);
+            retweet = (ImageView) itemView.findViewById(R.id.imageView_mention_retweet);
+            favorited = (ImageView) itemView.findViewById(R.id.imageView_mention_favorited);
         }
 
 

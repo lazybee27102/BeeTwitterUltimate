@@ -1,10 +1,12 @@
 package com.codepath.apps.beetwitterultimate.MainActivity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -36,23 +38,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class ComposeTweetActivity extends AppCompatActivity {
     private static final int COMPOSEACITVITY_INSERTPICTURE = 998;
+    private static final int COMPOSEACITVITY_TAKE_PHOTO = 997;
     private Toolbar toolbar;
     private ImageView imageView_profilePicture;
     private EditText editText_status;
     private Menu menu;
     private MenuItem post, countCharacter;
     private TwitterClient client;
-    private ImageView imageView_insert_picture, imageView_take_picture, imageView_add_link;
+    private ImageView imageView_insert_picture, imageView_take_picture;
     private RecyclerView recyclerView;
     private UploadImageAdapter adapter;
     private ArrayList<String> arrayImageUploaded;
+
+    private File photoCaptured;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +75,7 @@ public class ComposeTweetActivity extends AppCompatActivity {
 
     private void handleEvent() {
         String id = getIntent().getStringExtra(GlobalVariable.CURRENT_USER_ID);
-        client.getCurrentUserTimeLine(id, new JsonHttpResponseHandler() {
+        client.getCurrentUserTimeLine(id,1,-1,1, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
@@ -132,6 +141,24 @@ public class ComposeTweetActivity extends AppCompatActivity {
             }
         });
 
+        imageView_take_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (arrayImageUploaded.size() < 4) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    photoCaptured = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"JPEG_" + timeStamp+".jpg");
+                    Uri temUri = Uri.fromFile(photoCaptured);
+
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT,temUri);
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,1);
+                    startActivityForResult(intent,COMPOSEACITVITY_TAKE_PHOTO);
+                } else {
+                    Toast.makeText(ComposeTweetActivity.this, "We just support 4 pictures", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     private void registerWidgets() {
@@ -146,7 +173,6 @@ public class ComposeTweetActivity extends AppCompatActivity {
         imageView_profilePicture = (ImageView) findViewById(R.id.imageView_compose_profile_image);
         imageView_insert_picture = (ImageView) findViewById(R.id.imageView_compose_insertImage);
         imageView_take_picture = (ImageView) findViewById(R.id.imageView_compose_takePicture);
-        imageView_add_link = (ImageView) findViewById(R.id.imageView_compose_addLink);
 
         //recyclerView
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView_compose_images);
@@ -180,22 +206,12 @@ public class ComposeTweetActivity extends AppCompatActivity {
             NavUtils.navigateUpFromSameTask(this);
             return true;
         } else if (item.getItemId() == R.id.menu_action_compose) {
-            /*client.postNewTweet(editText_status.getText().toString().trim(), new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    super.onSuccess(statusCode, headers, response);
-                    setResult(RESULT_OK);
-                    finish();
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                }
-            });*/
 
             if (arrayImageUploaded.size() > 0) {
                 final List<String> medias = new ArrayList<>();
+                final ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setMessage("Uploading picture...");
+                progressDialog.show();
                 for (int i = 0; i < arrayImageUploaded.size(); i++) {
                     client.postMediaUpload(arrayImageUploaded.get(i), new JsonHttpResponseHandler() {
                         @Override
@@ -211,12 +227,18 @@ public class ComposeTweetActivity extends AppCompatActivity {
                                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                             super.onSuccess(statusCode, headers, response);
                                             setResult(RESULT_OK);
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
+                                            Toast.makeText(ComposeTweetActivity.this, "Upload successfully", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
 
                                         @Override
                                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                                             super.onFailure(statusCode, headers, throwable, errorResponse);
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
+                                            Toast.makeText(ComposeTweetActivity.this, "Upload Failed", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -233,23 +255,29 @@ public class ComposeTweetActivity extends AppCompatActivity {
 
                     });
                 }
-
-
-                /*client.postNewTweet(editText_status.getText().toString().trim(), medias, new JsonHttpResponseHandler() {
+            }else {
+                final ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setMessage("Uploading picture...");
+                progressDialog.show();
+                client.postNewTweet(editText_status.getText().toString().trim(), null, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
                         setResult(RESULT_OK);
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(ComposeTweetActivity.this, "Upload successfully", Toast.LENGTH_SHORT).show();
                         finish();
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                         super.onFailure(statusCode, headers, throwable, errorResponse);
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(ComposeTweetActivity.this, "Upload Failed", Toast.LENGTH_SHORT).show();
                     }
-                });*/
-
-
+                });
             }
 
 
@@ -308,6 +336,7 @@ public class ComposeTweetActivity extends AppCompatActivity {
 
             String picturePath = cursor.getString(columnIndex);
 
+
             cursor.close(); // close cursor
 
             arrayImageUploaded.add(picturePath);
@@ -315,6 +344,13 @@ public class ComposeTweetActivity extends AppCompatActivity {
 
             adapter.notifyItemInserted(arrayImageUploaded.size());
             recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+        }else if (requestCode==COMPOSEACITVITY_TAKE_PHOTO && resultCode==RESULT_OK)
+        {
+            arrayImageUploaded.add(photoCaptured.getAbsolutePath());
+            adapter.notifyItemInserted(arrayImageUploaded.size());
+            recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
         }
+
+
     }
 }

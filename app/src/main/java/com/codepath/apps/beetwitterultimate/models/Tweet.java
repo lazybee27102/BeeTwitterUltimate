@@ -68,13 +68,13 @@ public class Tweet implements Parcelable {
 
 
             boolean isMediaNull = object.isNull("extended_entities");
-            if (!isMediaNull)
-            {
+            if (!isMediaNull && !object.getJSONObject("extended_entities").isNull("media")) {
+
                 JSONArray media = object.getJSONObject("extended_entities").getJSONArray("media");
                 for (int i = 0; i < media.length(); i++) {
                     JSONObject objectMedia = media.getJSONObject(i);
                     if (objectMedia.getString("type").equals("photo")) {
-                        if (tweet.photos.size() < 4)
+                        if (!tweet.photos.contains(objectMedia.getString("media_url_https")))
                             tweet.photos.add(objectMedia.getString("media_url_https"));
 
                     } else {
@@ -88,13 +88,8 @@ public class Tweet implements Parcelable {
                             }
                         }
                     }
-                    if (tweet.video != null) {
-                        break;
-                    }
                 }
             }
-
-
 
 
             tweet.favorited = object.getBoolean("favorited");
@@ -126,6 +121,25 @@ public class Tweet implements Parcelable {
                 Log.d("JSONVALUE", object.toString());
                 Tweet tweet = Tweet.fromJSON(object);
                 if (tweet != null)
+                    arr.add(tweet);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                continue;
+            }
+
+        }
+
+        return arr;
+    }
+
+    public static ArrayList<Tweet> fromJSONArrayWithMedia(JSONArray array) {
+
+        ArrayList<Tweet> arr = new ArrayList<>();
+        for (int i = 0; i < array.length(); i++) {
+            try {
+                JSONObject object = array.getJSONObject(i);
+                Tweet tweet = Tweet.fromJSON(object);
+                if (tweet != null && (tweet.getPhoto().size()>0 || tweet.getVideo()!=null))
                     arr.add(tweet);
             } catch (JSONException e) {
                 e.printStackTrace();

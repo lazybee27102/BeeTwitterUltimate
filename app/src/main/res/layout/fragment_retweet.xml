@@ -10,11 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp"
-        android:layout_marginTop="10dp">
+        android:padding="5dp">
 
         <ImageView
-            android:id="@+id/imageView_comment_profile_image"
+            android:id="@+id/imageView_mention_profile_image"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentLeft="true"
@@ -24,13 +23,13 @@
             android:layout_marginLeft="10dp" />
 
         <TextView
-            android:id="@+id/textView_comment_profile_name"
+            android:id="@+id/textView_mention_profile_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="10dp"
-            android:layout_toEndOf="@+id/imageView_comment_profile_image"
-            android:layout_toRightOf="@+id/imageView_comment_profile_image"
+            android:layout_toEndOf="@+id/imageView_mention_profile_image"
+            android:layout_toRightOf="@+id/imageView_mention_profile_image"
             android:singleLine="true"
             android:text="Medium Text"
             android:textColor="#000000"
@@ -38,23 +37,23 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView_comment_create_at"
+            android:id="@+id/textView_mention_create_at"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView_comment_profile_name"
+            android:layout_below="@+id/textView_mention_profile_name"
             android:layout_marginLeft="10dp"
-            android:layout_toEndOf="@+id/imageView_comment_profile_image"
-            android:layout_toRightOf="@+id/imageView_comment_profile_image"
+            android:layout_toEndOf="@+id/imageView_mention_profile_image"
+            android:layout_toRightOf="@+id/imageView_mention_profile_image"
             android:text="Small Text" />
 
         <TextView
             android:id="@+id/textView_retweet_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView_comment_create_at"
+            android:layout_below="@+id/textView_mention_create_at"
             android:layout_marginLeft="10dp"
-            android:layout_toEndOf="@+id/imageView_comment_profile_image"
-            android:layout_toRightOf="@+id/imageView_comment_profile_image"
+            android:layout_toEndOf="@+id/imageView_mention_profile_image"
+            android:layout_toRightOf="@+id/imageView_mention_profile_image"
             android:autoLink="web"
             android:text="Medium Text"
             android:textColor="#000"
@@ -74,19 +73,17 @@
         android:layout_below="@+id/imageView_retweet_mainPhoto"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp" />
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="280dp"
+        android:layout_height="200dp"
         android:id="@+id/imageView_retweet_mainPhoto"
         android:layout_below="@+id/profile_wrapper"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:visibility="gone"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:padding="5dp" />
 
 </RelativeLayout>
